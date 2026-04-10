@@ -1,69 +1,68 @@
 import Link from "next/link";
-import { getMedia, resolveMediaUrl } from "@/lib/mediacms";
+import { Globe, Play } from "lucide-react";
+import { getMedia } from "@/lib/mediacms";
+import Hero from "@/components/hero";
+import VideoRow from "@/components/video-row";
 
 export const dynamic = "force-dynamic";
-
-function formatDuration(seconds: number): string {
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${s.toString().padStart(2, "0")}`;
-}
 
 export default async function Home() {
   const { results: media } = await getMedia();
 
-  return (
-    <main style={{ maxWidth: 960, margin: "0 auto", padding: "2rem 1rem" }}>
-      <h1 style={{ marginBottom: "2rem" }}>SAPANA</h1>
-
-      {media.length === 0 ? (
-        <section>
-          <p>No media yet.</p>
-          <p style={{ color: "#666", marginTop: "0.5rem" }}>
-            Upload videos at{" "}
-            <a href="http://localhost" target="_blank" rel="noreferrer">
-              MediaCMS admin
-            </a>{" "}
-            to see them here.
-          </p>
-        </section>
-      ) : (
-        <section
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: "1.5rem",
-          }}
+  if (media.length === 0) {
+    return (
+      <main className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
+        <div className="relative">
+          <div className="absolute inset-0 -z-10 animate-pulse rounded-full bg-brand/20 blur-3xl" />
+          <Globe className="h-20 w-20 text-brand/70" />
+        </div>
+        <h1 className="mt-6 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+          Welcome to Sapana
+        </h1>
+        <p className="mt-3 max-w-md text-sm text-muted-foreground md:text-base">
+          No media yet. Upload videos at the{" "}
+          <a
+            href="http://localhost"
+            target="_blank"
+            rel="noreferrer"
+            className="text-brand underline underline-offset-4 hover:text-brand/80"
+          >
+            MediaCMS admin panel
+          </a>{" "}
+          and they&apos;ll appear here.
+        </p>
+        <Link
+          href="http://localhost"
+          target="_blank"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition-transform hover:scale-105"
         >
-          {media.map((item) => (
-            <Link
-              key={item.friendly_token}
-              href={`/watch/${item.friendly_token}`}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <article>
-                <img
-                  src={resolveMediaUrl(item.thumbnail_url)}
-                  alt={item.title}
-                  style={{
-                    width: "100%",
-                    aspectRatio: "16/9",
-                    objectFit: "cover",
-                    borderRadius: 8,
-                    background: "#111",
-                  }}
-                />
-                <h2 style={{ fontSize: "1rem", margin: "0.5rem 0 0.25rem" }}>
-                  {item.title}
-                </h2>
-                <p style={{ fontSize: "0.85rem", color: "#888", margin: 0 }}>
-                  {item.views} views · {formatDuration(item.duration)}
-                </p>
-              </article>
-            </Link>
-          ))}
-        </section>
-      )}
+          <Play className="h-4 w-4 fill-current" />
+          Open MediaCMS
+        </Link>
+      </main>
+    );
+  }
+
+  const featured = media[0];
+  const recentlyAdded = media;
+  const trending = [...media].reverse();
+  const staffPicks = [...media].sort(
+    (a, b) => (b.views ?? 0) - (a.views ?? 0)
+  );
+
+  return (
+    <main className="-mt-16">
+      <Hero item={featured} />
+
+      <div className="relative z-10 -mt-16 space-y-4 pb-12 md:-mt-20 md:space-y-6">
+        <VideoRow title="Recently Added" items={recentlyAdded} />
+        {media.length > 1 && (
+          <VideoRow title="Trending Now" items={trending} />
+        )}
+        {media.length > 2 && (
+          <VideoRow title="Most Watched" items={staffPicks} />
+        )}
+      </div>
     </main>
   );
 }

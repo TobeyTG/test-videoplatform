@@ -1,0 +1,2307 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "MediaCMS API",
+        "contact": {
+            "url": "https://mediacms.io"
+        },
+        "x-logo": {
+            "url": "../../static/images/logo_dark.svg"
+        },
+        "version": "v1"
+    },
+    "security": [
+        {
+            "Basic": []
+        }
+    ],
+    "paths": {
+        "/categories": {
+            "get": {
+                "operationId": "categories_list",
+                "summary": "Lists Categories",
+                "description": "Lists all categories",
+                "responses": {
+                    "200": {
+                        "description": "response description",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Categories"
+                ]
+            },
+            "parameters": []
+        },
+        "/comments": {
+            "get": {
+                "operationId": "comments_list",
+                "summary": "Lists Comments",
+                "description": "Paginated listing of all comments",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "author",
+                        "in": "query",
+                        "description": "username",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "response description",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Comment"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Comments"
+                ]
+            },
+            "parameters": []
+        },
+        "/encode_profiles/": {
+            "get": {
+                "operationId": "encode_profiles_list",
+                "summary": "List Encoding Profiles",
+                "description": "Lists all encoding profiles for videos",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/EncodeProfile"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Encoding Profiles"
+                ]
+            },
+            "parameters": []
+        },
+        "/login": {
+            "post": {
+                "operationId": "login_create",
+                "summary": "Login url",
+                "description": "Login url endpoint. According to what the portal provides, you may provide username and/or email, plus the password",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "description": "username",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "email",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "password",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "user details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Login"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Bad request"
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "parameters": []
+        },
+        "/manage_comments": {
+            "get": {
+                "operationId": "manage_comments_list",
+                "summary": "Manage Comments",
+                "description": "Manage comments for MediaCMS managers and reviewers",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Manage"
+                ]
+            },
+            "delete": {
+                "operationId": "manage_comments_delete",
+                "summary": "Delete Comments",
+                "description": "Delete comments for MediaCMS managers and reviewers",
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Manage"
+                ]
+            },
+            "parameters": []
+        },
+        "/manage_media": {
+            "get": {
+                "operationId": "manage_media_list",
+                "summary": "Manage Media",
+                "description": "Manage media for MediaCMS managers and reviewers",
+                "parameters": [
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Sort by any of: title, add_date, edit_date, views, likes, reported_times",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "in": "query",
+                        "description": "Order by: asc, desc",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "description": "Media state, options: private\", \"public\", \"unlisted",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "encoding_status",
+                        "in": "query",
+                        "description": "Encoding status, options \"pending\", \"running\", \"fail\", \"success\"",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Manage"
+                ]
+            },
+            "delete": {
+                "operationId": "manage_media_delete",
+                "summary": "Delete Media",
+                "description": "Delete media for MediaCMS managers and reviewers",
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Manage"
+                ]
+            },
+            "parameters": []
+        },
+        "/manage_users": {
+            "get": {
+                "operationId": "manage_users_list",
+                "summary": "Manage Users",
+                "description": "Manage users for MediaCMS managers and reviewers",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Manage"
+                ]
+            },
+            "delete": {
+                "operationId": "manage_users_delete",
+                "summary": "Delete Users",
+                "description": "Delete users for MediaCMS managers",
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Manage"
+                ]
+            },
+            "parameters": []
+        },
+        "/media": {
+            "get": {
+                "operationId": "media_list",
+                "description": "Media listings views",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "media"
+                ]
+            },
+            "post": {
+                "operationId": "media_create",
+                "summary": "Add new Media",
+                "description": "Adds a new media, for authenticated users",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/media_create"
+                },
+                "responses": {
+                    "201": {
+                        "description": "response description",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Media"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "bad request"
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "parameters": []
+        },
+        "/media/": {
+            "get": {
+                "operationId": "media_list",
+                "description": "Media listings views",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "media"
+                ]
+            },
+            "post": {
+                "operationId": "media_create",
+                "summary": "Add new Media",
+                "description": "Adds a new media, for authenticated users",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/media_create"
+                },
+                "responses": {
+                    "201": {
+                        "description": "response description",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Media"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "bad request"
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "parameters": []
+        },
+        "/media/user/bulk_actions": {
+            "post": {
+                "operationId": "media_user_bulk_actions_create",
+                "summary": "Perform bulk actions on media",
+                "description": "Perform various bulk actions on multiple media items at once",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/media_user_bulk_actions_createData"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Action performed successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "parameters": []
+        },
+        "/media/user/bulk_actions/": {
+            "post": {
+                "operationId": "media_user_bulk_actions_create",
+                "summary": "Perform bulk actions on media",
+                "description": "Perform various bulk actions on multiple media items at once",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/media_user_bulk_actions_createData"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Action performed successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Not authenticated"
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "parameters": []
+        },
+        "/media/{friendly_token}": {
+            "get": {
+                "operationId": "media_read",
+                "summary": "Get information for Media",
+                "description": "Get information for a media",
+                "parameters": [
+                    {
+                        "name": "friendly_token",
+                        "in": "path",
+                        "description": "unique identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SingleMedia"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad request"
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "post": {
+                "operationId": "media_manager_actions",
+                "summary": "Run action on Media",
+                "description": "Actions for a media, for MediaCMS editors and managers",
+                "parameters": [
+                    {
+                        "name": "friendly_token",
+                        "in": "path",
+                        "description": "unique identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "description": "action to perform",
+                                        "type": "string",
+                                        "enum": [
+                                            "encode",
+                                            "review"
+                                        ]
+                                    },
+                                    "encoding_profiles": {
+                                        "description": "if action to perform is encode, need to specify list of ids of encoding profiles",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "result": {
+                                        "description": "if action is review, this is the result (True for reviewed, False for not reviewed)",
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "action created"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "put": {
+                "operationId": "media_update",
+                "summary": "Update Media",
+                "description": "Update a Media, for Media uploader",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "description": {
+                                        "description": "description",
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "description": "title",
+                                        "type": "string"
+                                    },
+                                    "media_file": {
+                                        "description": "media_file",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "response description",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Media"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "bad request"
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "delete": {
+                "operationId": "media_delete",
+                "summary": "Delete Media",
+                "description": "Delete a Media, for MediaCMS editors and managers",
+                "parameters": [
+                    {
+                        "name": "friendly_token",
+                        "in": "path",
+                        "description": "unique identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "no content"
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "friendly_token",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "/media/{friendly_token}/actions": {
+            "get": {
+                "operationId": "media_actions_list",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "post": {
+                "operationId": "media_actions_create",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "delete": {
+                "operationId": "media_actions_delete",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "friendly_token",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "/media/{friendly_token}/comments": {
+            "get": {
+                "operationId": "media_comments_list",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "post": {
+                "operationId": "media_comments_create",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "delete": {
+                "operationId": "media_comments_delete",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "friendly_token",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "/media/{friendly_token}/comments/{uid}": {
+            "get": {
+                "operationId": "media_comments_read",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "post": {
+                "operationId": "media_comments_create",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "delete": {
+                "operationId": "media_comments_delete",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Media"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "friendly_token",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "uid",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "/playlists": {
+            "get": {
+                "operationId": "playlists_list",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "200": {
+                        "description": "response description",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Playlist"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Playlists"
+                ]
+            },
+            "post": {
+                "operationId": "playlists_create",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Playlists"
+                ]
+            },
+            "parameters": []
+        },
+        "/playlists/": {
+            "get": {
+                "operationId": "playlists_list",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "200": {
+                        "description": "response description",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Playlist"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Playlists"
+                ]
+            },
+            "post": {
+                "operationId": "playlists_create",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Playlists"
+                ]
+            },
+            "parameters": []
+        },
+        "/playlists/{friendly_token}": {
+            "get": {
+                "operationId": "playlists_read",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Playlists"
+                ]
+            },
+            "post": {
+                "operationId": "playlists_create",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Playlists"
+                ]
+            },
+            "put": {
+                "operationId": "playlists_update",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Playlists"
+                ]
+            },
+            "delete": {
+                "operationId": "playlists_delete",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Playlists"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "friendly_token",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "/search": {
+            "get": {
+                "operationId": "search_list",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Search"
+                ]
+            },
+            "parameters": []
+        },
+        "/tags": {
+            "get": {
+                "operationId": "tags_list",
+                "summary": "Lists Tags",
+                "description": "Paginated listing of all tags",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "response description",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Tag"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Tags"
+                ]
+            },
+            "parameters": []
+        },
+        "/user/action/{action}": {
+            "get": {
+                "operationId": "user_action_read",
+                "summary": "List user actions",
+                "description": "Lists user actions",
+                "parameters": [
+                    {
+                        "name": "action",
+                        "in": "path",
+                        "description": "action",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "like",
+                                "dislike",
+                                "watch",
+                                "report",
+                                "rate"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "action",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "/user/token": {
+            "get": {
+                "operationId": "user_token_list",
+                "summary": "Get a user token",
+                "description": "Returns an authenticated user's token",
+                "responses": {
+                    "200": {
+                        "description": "token"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "parameters": []
+        },
+        "/users": {
+            "get": {
+                "operationId": "users_list",
+                "summary": "List users",
+                "description": "Paginated listing of users",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Search by name, username, and optionally email (depending on USER_SEARCH_FIELD setting)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "exclude_self",
+                        "in": "query",
+                        "description": "Exclude current user from results",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "post": {
+                "operationId": "users_create",
+                "summary": "Create user",
+                "description": "Create a new user. Only for managers.",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/users_createData"
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "parameters": []
+        },
+        "/users/": {
+            "get": {
+                "operationId": "users_list",
+                "summary": "List users",
+                "description": "Paginated listing of users",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Search by name, username, and optionally email (depending on USER_SEARCH_FIELD setting)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "exclude_self",
+                        "in": "query",
+                        "description": "Exclude current user from results",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "post": {
+                "operationId": "users_create",
+                "summary": "Create user",
+                "description": "Create a new user. Only for managers.",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/users_createData"
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "parameters": []
+        },
+        "/users/{username}": {
+            "get": {
+                "operationId": "users_read",
+                "summary": "List user details",
+                "description": "Get user details",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "post": {
+                "operationId": "users_create",
+                "summary": "Edit user details",
+                "description": "Post user details - authenticated view",
+                "parameters": [
+                    {
+                        "name": "username",
+                        "in": "path",
+                        "description": "username",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "logo": {
+                                        "description": "logo",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "description": {
+                                        "description": "description",
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "description": "name",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "logo"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "response description",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDetail"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad request"
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "put": {
+                "operationId": "users_update",
+                "summary": "Update user details",
+                "description": "Allows a user to change their password. Allows a manager to approve a user.",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "action": {
+                                        "description": "action to perform ('change_password' or 'approve_user' or 'disapprove_user')",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "new password (if action is 'change_password')",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "action"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "delete": {
+                "operationId": "users_delete",
+                "summary": "to_be_written",
+                "description": "to_be_written",
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "username",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "/users/{username}/contact": {
+            "post": {
+                "operationId": "users_contact_create",
+                "summary": "Contact user",
+                "description": "Contact user through email, if user has set this option",
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "username",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "/whoami": {
+            "get": {
+                "operationId": "whoami_read",
+                "summary": "Whoami user information",
+                "description": "Whoami user information",
+                "responses": {
+                    "200": {
+                        "description": "response description",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDetail"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "tags": [
+                    "Users"
+                ]
+            },
+            "parameters": []
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost/api/v1"
+        }
+    ],
+    "components": {
+        "requestBodies": {
+            "users_createData": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "required": [
+                                "username",
+                                "password",
+                                "email",
+                                "name"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "format": "email"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": true
+            },
+            "media_create": {
+                "content": {
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "media_file": {
+                                    "description": "media_file",
+                                    "type": "string",
+                                    "format": "binary"
+                                },
+                                "description": {
+                                    "description": "description",
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "description": "title",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "media_file"
+                            ]
+                        }
+                    }
+                },
+                "required": true
+            },
+            "media_user_bulk_actions_createData": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "required": [
+                                "media_ids",
+                                "action"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "media_ids": {
+                                    "description": "List of media IDs",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "action": {
+                                    "description": "Action to perform",
+                                    "type": "string",
+                                    "enum": [
+                                        "enable_comments",
+                                        "disable_comments",
+                                        "delete_media",
+                                        "enable_download",
+                                        "disable_download",
+                                        "add_to_playlist",
+                                        "remove_from_playlist",
+                                        "set_state",
+                                        "change_owner",
+                                        "copy_media",
+                                        "get_ownership",
+                                        "set_ownership",
+                                        "remove_ownership",
+                                        "playlist_membership",
+                                        "category_membership",
+                                        "tag_membership",
+                                        "add_to_category",
+                                        "remove_from_category",
+                                        "add_tags",
+                                        "remove_tags"
+                                    ]
+                                },
+                                "playlist_ids": {
+                                    "description": "List of playlist IDs (required for add_to_playlist and remove_from_playlist actions)",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "category_uids": {
+                                    "description": "List of category UIDs (required for add_to_category and remove_from_category actions)",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "tag_titles": {
+                                    "description": "List of tag titles (required for add_tags and remove_tags actions)",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "state": {
+                                    "description": "State to set (required for set_state action)",
+                                    "type": "string",
+                                    "enum": [
+                                        "private",
+                                        "public",
+                                        "unlisted"
+                                    ]
+                                },
+                                "owner": {
+                                    "description": "New owner username (required for change_owner action)",
+                                    "type": "string"
+                                },
+                                "ownership_type": {
+                                    "description": "Ownership type to filter/set/remove (required for get_ownership, set_ownership, and remove_ownership actions)",
+                                    "type": "string",
+                                    "enum": [
+                                        "viewer",
+                                        "editor",
+                                        "owner"
+                                    ]
+                                },
+                                "users": {
+                                    "description": "List of usernames (required for set_ownership and remove_ownership actions)",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": true
+            }
+        },
+        "securitySchemes": {
+            "Basic": {
+                "type": "http",
+                "scheme": "basic"
+            }
+        },
+        "schemas": {
+            "Category": {
+                "required": [
+                    "title"
+                ],
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "title": "Title",
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 1
+                    },
+                    "uid": {
+                        "title": "Uid",
+                        "type": "string",
+                        "maxLength": 36,
+                        "minLength": 1
+                    },
+                    "description": {
+                        "title": "Description",
+                        "type": "string"
+                    },
+                    "is_global": {
+                        "title": "Is global",
+                        "description": "global categories or user specific",
+                        "type": "boolean"
+                    },
+                    "media_count": {
+                        "title": "Media count",
+                        "description": "number of media",
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648
+                    },
+                    "user": {
+                        "title": "User",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "thumbnail_url": {
+                        "title": "Thumbnail url",
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
+            },
+            "Comment": {
+                "required": [
+                    "text"
+                ],
+                "type": "object",
+                "properties": {
+                    "add_date": {
+                        "title": "Add date",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "text": {
+                        "title": "Text",
+                        "description": "text",
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "parent": {
+                        "title": "Parent",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "author_thumbnail_url": {
+                        "title": "Author thumbnail url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "author_profile": {
+                        "title": "Author profile",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "author_name": {
+                        "title": "Author name",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "media_url": {
+                        "title": "Media url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "uid": {
+                        "title": "Uid",
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    }
+                }
+            },
+            "EncodeProfile": {
+                "required": [
+                    "name",
+                    "extension"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "title": "Name",
+                        "type": "string",
+                        "maxLength": 90,
+                        "minLength": 1
+                    },
+                    "extension": {
+                        "title": "Extension",
+                        "type": "string",
+                        "enum": [
+                            "mp4",
+                            "webm",
+                            "gif"
+                        ]
+                    },
+                    "resolution": {
+                        "title": "Resolution",
+                        "type": "integer",
+                        "enum": [
+                            2160,
+                            1440,
+                            1080,
+                            720,
+                            480,
+                            360,
+                            240,
+                            144
+                        ],
+                        "nullable": true
+                    },
+                    "codec": {
+                        "title": "Codec",
+                        "type": "string",
+                        "enum": [
+                            "h265",
+                            "h264",
+                            "vp9"
+                        ],
+                        "nullable": true
+                    },
+                    "description": {
+                        "title": "Description",
+                        "description": "description",
+                        "type": "string"
+                    }
+                }
+            },
+            "Login": {
+                "required": [
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "title": "Email",
+                        "type": "string",
+                        "maxLength": 255,
+                        "minLength": 1
+                    },
+                    "username": {
+                        "title": "Username",
+                        "type": "string",
+                        "maxLength": 255,
+                        "minLength": 1
+                    },
+                    "password": {
+                        "title": "Password",
+                        "type": "string",
+                        "maxLength": 128,
+                        "minLength": 1
+                    },
+                    "token": {
+                        "title": "Token",
+                        "type": "string",
+                        "maxLength": 255,
+                        "minLength": 1
+                    }
+                }
+            },
+            "Media": {
+                "type": "object",
+                "properties": {
+                    "friendly_token": {
+                        "title": "Friendly token",
+                        "description": "Identifier for the Media",
+                        "type": "string",
+                        "readOnly": true,
+                        "minLength": 1
+                    },
+                    "url": {
+                        "title": "Url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "api_url": {
+                        "title": "Api url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "user": {
+                        "title": "User",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "title": "Title",
+                        "description": "media title",
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "description": {
+                        "title": "Description",
+                        "type": "string"
+                    },
+                    "add_date": {
+                        "title": "Date produced",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "views": {
+                        "title": "Views",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "media_type": {
+                        "title": "Media type",
+                        "type": "string",
+                        "enum": [
+                            "video",
+                            "image",
+                            "pdf",
+                            "audio"
+                        ],
+                        "readOnly": true
+                    },
+                    "state": {
+                        "title": "State",
+                        "description": "state of Media",
+                        "type": "string",
+                        "enum": [
+                            "private",
+                            "public",
+                            "unlisted"
+                        ],
+                        "readOnly": true
+                    },
+                    "duration": {
+                        "title": "Duration",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "thumbnail_url": {
+                        "title": "Thumbnail url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "is_reviewed": {
+                        "title": "Is reviewed",
+                        "description": "Whether media is reviewed, so it can appear on public listings",
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "preview_url": {
+                        "title": "Preview url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "author_name": {
+                        "title": "Author name",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "author_profile": {
+                        "title": "Author profile",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "author_thumbnail": {
+                        "title": "Author thumbnail",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "encoding_status": {
+                        "title": "Encoding status",
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "running",
+                            "fail",
+                            "success"
+                        ],
+                        "readOnly": true
+                    },
+                    "likes": {
+                        "title": "Likes",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "dislikes": {
+                        "title": "Dislikes",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "reported_times": {
+                        "title": "Reported times",
+                        "description": "how many time a media is reported",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "featured": {
+                        "title": "Featured",
+                        "description": "Whether media is globally featured by a MediaCMS editor",
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "user_featured": {
+                        "title": "User featured",
+                        "description": "Featured by the user",
+                        "type": "boolean"
+                    },
+                    "size": {
+                        "title": "Size",
+                        "description": "media size in bytes, automatically calculated",
+                        "type": "string",
+                        "readOnly": true,
+                        "minLength": 1,
+                        "nullable": true
+                    }
+                }
+            },
+            "SingleMedia": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "title": "Url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "user": {
+                        "title": "User",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "title": "Title",
+                        "description": "media title",
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "description": {
+                        "title": "Description",
+                        "type": "string"
+                    },
+                    "add_date": {
+                        "title": "Date produced",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "edit_date": {
+                        "title": "Edit date",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "media_type": {
+                        "title": "Media type",
+                        "type": "string",
+                        "enum": [
+                            "video",
+                            "image",
+                            "pdf",
+                            "audio"
+                        ],
+                        "readOnly": true
+                    },
+                    "state": {
+                        "title": "State",
+                        "description": "state of Media",
+                        "type": "string",
+                        "enum": [
+                            "private",
+                            "public",
+                            "unlisted"
+                        ],
+                        "readOnly": true
+                    },
+                    "is_shared": {
+                        "title": "Is shared",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "duration": {
+                        "title": "Duration",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "thumbnail_url": {
+                        "title": "Thumbnail url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "poster_url": {
+                        "title": "Poster url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "thumbnail_time": {
+                        "title": "Thumbnail time",
+                        "description": "Time on video that a thumbnail will be taken",
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "sprites_url": {
+                        "title": "Sprites url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "preview_url": {
+                        "title": "Preview url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "author_name": {
+                        "title": "Author name",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "author_profile": {
+                        "title": "Author profile",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "author_thumbnail": {
+                        "title": "Author thumbnail",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "encodings_info": {
+                        "title": "Encodings info",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "encoding_status": {
+                        "title": "Encoding status",
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "running",
+                            "fail",
+                            "success"
+                        ],
+                        "readOnly": true
+                    },
+                    "views": {
+                        "title": "Views",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "likes": {
+                        "title": "Likes",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "dislikes": {
+                        "title": "Dislikes",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "reported_times": {
+                        "title": "Reported times",
+                        "description": "how many time a media is reported",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "user_featured": {
+                        "title": "User featured",
+                        "description": "Featured by the user",
+                        "type": "boolean"
+                    },
+                    "original_media_url": {
+                        "title": "Original media url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "size": {
+                        "title": "Size",
+                        "description": "media size in bytes, automatically calculated",
+                        "type": "string",
+                        "readOnly": true,
+                        "minLength": 1,
+                        "nullable": true
+                    },
+                    "video_height": {
+                        "title": "Video height",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "enable_comments": {
+                        "title": "Enable comments",
+                        "description": "Whether comments will be allowed for this media",
+                        "type": "boolean"
+                    },
+                    "categories_info": {
+                        "title": "Categories info",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "is_reviewed": {
+                        "title": "Is reviewed",
+                        "description": "Whether media is reviewed, so it can appear on public listings",
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "edit_url": {
+                        "title": "Edit url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "tags_info": {
+                        "title": "Tags info",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "hls_info": {
+                        "title": "Hls info",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "license": {
+                        "title": "License",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "subtitles_info": {
+                        "title": "Subtitles info",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "chapter_data": {
+                        "title": "Chapter data",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "ratings_info": {
+                        "title": "Ratings info",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "add_subtitle_url": {
+                        "title": "Add subtitle url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "allow_download": {
+                        "title": "Allow download",
+                        "description": "Whether option to download media is shown",
+                        "type": "boolean"
+                    },
+                    "slideshow_items": {
+                        "title": "Slideshow items",
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
+            },
+            "Playlist": {
+                "required": [
+                    "title"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "add_date": {
+                        "title": "Add date",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "title": "Title",
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 1
+                    },
+                    "description": {
+                        "title": "Description",
+                        "description": "description",
+                        "type": "string"
+                    },
+                    "user": {
+                        "title": "User",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "media_count": {
+                        "title": "Media count",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "url": {
+                        "title": "Url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "api_url": {
+                        "title": "Api url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "thumbnail_url": {
+                        "title": "Thumbnail url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "friendly_token": {
+                        "title": "Friendly token",
+                        "type": "string",
+                        "maxLength": 12
+                    }
+                }
+            },
+            "Tag": {
+                "required": [
+                    "title"
+                ],
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "title": "Title",
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 1
+                    },
+                    "media_count": {
+                        "title": "Media count",
+                        "description": "number of media",
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648
+                    },
+                    "thumbnail_url": {
+                        "title": "Thumbnail url",
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
+            },
+            "User": {
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "title": "About me",
+                        "type": "string"
+                    },
+                    "date_added": {
+                        "title": "Date added",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "title": "Full name",
+                        "type": "string",
+                        "maxLength": 250,
+                        "minLength": 1
+                    },
+                    "is_featured": {
+                        "title": "Is featured",
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "thumbnail_url": {
+                        "title": "Thumbnail url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "url": {
+                        "title": "Url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "api_url": {
+                        "title": "Api url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "username": {
+                        "title": "Username",
+                        "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                        "type": "string",
+                        "readOnly": true,
+                        "minLength": 1
+                    },
+                    "advancedUser": {
+                        "title": "Advanced user",
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "is_editor": {
+                        "title": "MediaCMS Editor",
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "is_manager": {
+                        "title": "MediaCMS Manager",
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "email_is_verified": {
+                        "title": "Email is verified",
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
+            },
+            "UserDetail": {
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "title": "About me",
+                        "type": "string"
+                    },
+                    "date_added": {
+                        "title": "Date added",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "title": "Full name",
+                        "type": "string",
+                        "maxLength": 250,
+                        "minLength": 1
+                    },
+                    "is_featured": {
+                        "title": "Is featured",
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "thumbnail_url": {
+                        "title": "Thumbnail url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "banner_thumbnail_url": {
+                        "title": "Banner thumbnail url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "url": {
+                        "title": "Url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "username": {
+                        "title": "Username",
+                        "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                        "type": "string",
+                        "readOnly": true,
+                        "minLength": 1
+                    },
+                    "media_info": {
+                        "title": "Media info",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "api_url": {
+                        "title": "Api url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "edit_url": {
+                        "title": "Edit url",
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "default_channel_edit_url": {
+                        "title": "Default channel edit url",
+                        "type": "string",
+                        "readOnly": true
+                    }
+                }
+            }
+        }
+    }
+}
