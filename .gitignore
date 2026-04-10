@@ -1,0 +1,17 @@
+node_modules/
+.next/
+dist/
+.turbo/
+.env*.local
+*.tsbuildinfo
+
+backend/.env
+backend/media_files/
+backend/media_uploads/
+backend/uploads/
+backend/*.sqlite3
+backend/*.db
+backend/data/
+
+*.log
+.DS_Store
