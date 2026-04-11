@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ApiProvider } from "@/api/provider";
+import { WatchTransitionProvider } from "@/components/watch-transition";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import "../styles/globals.css";
@@ -23,7 +24,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn(geist.variable, geistMono.variable, "dark")}>
       <body className="relative min-h-screen bg-background font-sans text-foreground antialiased selection:bg-brand/30 selection:text-foreground">
-        {/* Ambient background glow */}
         <div
           aria-hidden
           className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
@@ -36,8 +36,10 @@ export default function RootLayout({
           <Suspense fallback={<div className="h-16" />}>
             <Navbar />
           </Suspense>
-          <div className="pt-16">{children}</div>
-          <Footer />
+          <WatchTransitionProvider>
+            <div className="pt-16">{children}</div>
+            <Footer />
+          </WatchTransitionProvider>
         </ApiProvider>
       </body>
     </html>

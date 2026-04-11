@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { resolveMediaUrl } from "@/lib/mediacms";
 import type { MediaItem } from "@/lib/mediacms";
+import { useWatchTransition } from "@/components/watch-transition";
 
 interface HeroProps {
   item: MediaItem;
@@ -14,10 +15,31 @@ interface HeroProps {
 
 export default function Hero({ item }: HeroProps) {
   const bg = resolveMediaUrl(item.thumbnail_url ?? "");
+  const { start: startWatchTransition } = useWatchTransition();
+
+  const handlePlay = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (
+      e.metaKey ||
+      e.ctrlKey ||
+      e.shiftKey ||
+      e.altKey ||
+      e.button !== 0 ||
+      !item.friendly_token
+    ) {
+      return;
+    }
+    e.preventDefault();
+    startWatchTransition({
+      token: item.friendly_token,
+      originX: e.clientX,
+      originY: e.clientY + window.scrollY,
+    });
+  };
 
   return (
-    <section className="relative -mt-16 h-[82vh] min-h-[560px] w-full overflow-hidden">
-      {/* Background image with slow zoom */}
+    <section
+      className="relative -mt-16 h-[82vh] min-h-[560px] w-full overflow-hidden"
+    >
       <motion.div
         initial={{ scale: 1.08, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -32,12 +54,10 @@ export default function Hero({ item }: HeroProps) {
         />
       </motion.div>
 
-      {/* Cinematic gradient stack */}
       <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
-      {/* Noise texture for cinematic feel */}
       <div
         aria-hidden
         className="absolute inset-0 opacity-[0.04] mix-blend-overlay"
@@ -47,7 +67,6 @@ export default function Hero({ item }: HeroProps) {
         }}
       />
 
-      {/* Content */}
       <div className="relative z-10 mx-auto flex h-full max-w-[1800px] items-end px-4 pb-24 md:px-8 md:pb-28">
         <div className="max-w-2xl space-y-5">
           <motion.div
@@ -88,6 +107,7 @@ export default function Hero({ item }: HeroProps) {
           >
             <Link
               href={`/watch/${item.friendly_token}`}
+              onClick={handlePlay}
               className={cn(
                 buttonVariants({ size: "lg" }),
                 "gap-2 rounded-full bg-white px-6 py-3 text-base font-semibold text-black shadow-[0_8px_32px_-8px_rgba(255,255,255,0.4)] transition-all hover:scale-[1.03] hover:bg-white/90"
@@ -98,6 +118,7 @@ export default function Hero({ item }: HeroProps) {
             </Link>
             <Link
               href={`/watch/${item.friendly_token}`}
+              onClick={handlePlay}
               className={cn(
                 buttonVariants({ variant: "secondary", size: "lg" }),
                 "gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-3 text-base font-semibold text-foreground backdrop-blur-md transition-all hover:scale-[1.03] hover:bg-white/20"
@@ -110,7 +131,6 @@ export default function Hero({ item }: HeroProps) {
         </div>
       </div>
 
-      {/* Subtle scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

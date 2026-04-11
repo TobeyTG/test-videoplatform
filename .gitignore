@@ -4,7 +4,9 @@ dist/
 .turbo/
 .env*.local
 *.tsbuildinfo
-
+apps/web/.env
+apps/web/.env.local
+apps/web/node_modules/
 backend/.env
 backend/media_files/
 backend/media_uploads/

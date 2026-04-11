@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
@@ -10,6 +9,7 @@ import { Play, Plus, ThumbsUp, ChevronDown, Volume2, VolumeX } from "lucide-reac
 import { resolveMediaUrl } from "@/lib/mediacms";
 import type { MediaItem } from "@/lib/mediacms";
 import { mediaDetailOptions } from "@/api/queries/media";
+import { useWatchTransition } from "@/components/watch-transition";
 import { cn } from "@/lib/utils";
 
 const HOVER_DELAY_MS = 450;
@@ -57,12 +57,11 @@ function HoverPreview({
   onMouseLeave,
 }: HoverPreviewProps) {
   const thumb = resolveMediaUrl(item.thumbnail_url ?? "");
-  const router = useRouter();
+  const { start: startWatchTransition } = useWatchTransition();
   const [muted, setMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Always fetch detail — TanStack caches it so repeat hovers are free.
   const { data: detail } = useQuery({
     ...mediaDetailOptions(item.friendly_token ?? ""),
     enabled: Boolean(item.friendly_token),
@@ -71,35 +70,23 @@ function HoverPreview({
     detail as unknown as { original_media_url?: string } | undefined
   )?.original_media_url;
 
-  // Resolve a raw preview_url to absolute, then classify it.
   const rawPreviewUrl = item.preview_url
     ? resolveMediaUrl(item.preview_url)
     : null;
   const previewIsVideo = rawPreviewUrl ? isVideoUrl(rawPreviewUrl) : false;
 
-  // Video source preference:
-  // 1. preview_url if it's a video file (small, purpose-built preview clip)
-  // 2. original_media_url from detail fetch (full file, browser range-requests)
-  // We intentionally ignore .gif preview_urls — they're tiny still-frame
-  // thumbnails in MediaCMS and not what the user wants to see.
   const videoSrc = previewIsVideo
     ? rawPreviewUrl
     : detailMediaUrl
       ? resolveMediaUrl(detailMediaUrl)
       : null;
 
-  // Sync subsequent mute toggles to the element.
   useEffect(() => {
     if (videoRef.current) videoRef.current.muted = muted;
   }, [muted]);
 
-  // Track teardown for the current video element so we can reuse it on src change.
   const teardownRef = useRef<(() => void) | null>(null);
 
-  // Ref callback: runs synchronously when the <video> element mounts (or the
-  // ref target changes). Doing the setup here — rather than in a useEffect —
-  // avoids a race where useEffect([videoSrc]) can fire before a newly
-  // conditionally-rendered element's ref is committed.
   const attachVideo = useCallback(
     (video: HTMLVideoElement | null) => {
       if (teardownRef.current) {
@@ -150,7 +137,6 @@ function HoverPreview({
     [videoSrc]
   );
 
-  // Final teardown on component unmount.
   useEffect(
     () => () => {
       if (teardownRef.current) teardownRef.current();
@@ -159,7 +145,6 @@ function HoverPreview({
     []
   );
 
-  // Manual fallback: user-initiated play (bypasses any residual autoplay block).
   const forcePlay = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -167,7 +152,6 @@ function HoverPreview({
     video.play().catch(() => {});
   }, []);
 
-  // Compute where the expanded preview should sit.
   const previewWidth = sourceRect.width * PREVIEW_SCALE;
   const previewThumbHeight = sourceRect.height * PREVIEW_SCALE;
   const contentHeight = 168;
@@ -198,7 +182,21 @@ function HoverPreview({
     height: previewHeight,
   };
 
-  const goWatch = () => router.push(`/watch/${item.friendly_token}`);
+  const goWatch = () => {
+    if (!item.friendly_token) return;
+    // Anchor the page-zoom on the preview's currently-rendered thumbnail
+    // center — that's what the user is actually looking at when they click.
+    const originX = target.left + target.width / 2;
+    const originY =
+      target.top +
+      previewThumbHeight / 2 +
+      (typeof window !== "undefined" ? window.scrollY : 0);
+    startWatchTransition({
+      token: item.friendly_token,
+      originX,
+      originY,
+    });
+  };
 
   return createPortal(
     <motion.div
@@ -211,7 +209,6 @@ function HoverPreview({
       className="fixed z-[60] overflow-hidden rounded-xl bg-card shadow-[0_30px_90px_-10px_rgba(0,0,0,0.9)] ring-1 ring-white/10"
       style={{ transformOrigin: "center center" }}
     >
-      {/* Media area — thumbnail → video crossfade */}
       <div
         role="button"
         tabIndex={0}
@@ -225,7 +222,6 @@ function HoverPreview({
         className="group relative block w-full cursor-pointer overflow-hidden bg-black"
         style={{ height: previewThumbHeight }}
       >
-        {/* Poster: always shown underneath; video fades in on top */}
         <img
           src={thumb}
           alt={item.title ?? ""}
@@ -243,10 +239,8 @@ function HoverPreview({
           />
         ) : null}
 
-        {/* Bottom fade for readability */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent" />
 
-        {/* Mute toggle — only when we have a video source */}
         {videoSrc && (
           <button
             type="button"
@@ -265,9 +259,6 @@ function HoverPreview({
           </button>
         )}
 
-        {/* Manual play fallback: visible whenever we have a video source but
-            it isn't currently playing. Clicking it forces .play() from a user
-            gesture — bypasses any lingering autoplay block. */}
         {videoSrc && !isPlaying && (
           <motion.button
             type="button"
@@ -288,7 +279,6 @@ function HoverPreview({
         )}
       </div>
 
-      {/* Content */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -371,6 +361,7 @@ export default function VideoCard({ item, compact = false }: VideoCardProps) {
   const [preview, setPreview] = useState<{ rect: DOMRect } | null>(null);
   const openTimer = useRef<number | null>(null);
   const closeTimer = useRef<number | null>(null);
+  const { start: startWatchTransition } = useWatchTransition();
 
   const clearTimers = useCallback(() => {
     if (openTimer.current) {
@@ -417,7 +408,6 @@ export default function VideoCard({ item, compact = false }: VideoCardProps) {
     }
   }, []);
 
-  // Close preview on scroll/resize — its position would otherwise drift.
   useEffect(() => {
     if (!preview) return;
     const close = () => {
@@ -434,11 +424,39 @@ export default function VideoCard({ item, compact = false }: VideoCardProps) {
 
   useEffect(() => () => clearTimers(), [clearTimers]);
 
+  const handleCardClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Let modifier-clicks open in a new tab / window naturally.
+    if (
+      e.metaKey ||
+      e.ctrlKey ||
+      e.shiftKey ||
+      e.altKey ||
+      e.button !== 0 ||
+      !cardRef.current ||
+      !item.friendly_token
+    ) {
+      return;
+    }
+    e.preventDefault();
+    clearTimers();
+    setPreview(null);
+    // Anchor the page-zoom on the click point (page coordinates), so the
+    // surrounding viewport scales out from where the user actually clicked.
+    const originX = e.clientX;
+    const originY = e.clientY + window.scrollY;
+    startWatchTransition({
+      token: item.friendly_token,
+      originX,
+      originY,
+    });
+  };
+
   return (
     <>
       <Link
         ref={cardRef}
         href={`/watch/${item.friendly_token}`}
+        onClick={handleCardClick}
         onMouseEnter={scheduleOpen}
         onMouseLeave={scheduleClose}
         className={cn(

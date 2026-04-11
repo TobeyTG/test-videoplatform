@@ -59,7 +59,6 @@ export default function VideoRow({ title, items }: VideoRowProps) {
       </div>
 
       <div className="group/row relative">
-        {/* Left edge fade + button */}
         <button
           onClick={() => scroll("left")}
           className={cn(
@@ -77,7 +76,6 @@ export default function VideoRow({ title, items }: VideoRowProps) {
           </motion.div>
         </button>
 
-        {/* Scrollable row */}
         <div
           ref={scrollRef}
           className="scrollbar-hide flex gap-3 overflow-x-auto px-4 pb-8 pt-2 md:px-8"
@@ -99,7 +97,6 @@ export default function VideoRow({ title, items }: VideoRowProps) {
           ))}
         </div>
 
-        {/* Right edge fade + button */}
         <button
           onClick={() => scroll("right")}
           className={cn(

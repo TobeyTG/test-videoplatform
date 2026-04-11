@@ -33,4 +33,8 @@ CELERY_RESULT_BACKEND = BROKER_URL
 
 MP4HLS_COMMAND = "/home/mediacms.io/bento4/bin/mp4hls"
 
+# Restrict video upload to admin-promoted users only.
+# Options: "all" | "email_verified" | "advancedUser"
+CAN_ADD_MEDIA = "advancedUser"
+
 DEBUG = os.getenv('DEBUG', 'False') == 'True'

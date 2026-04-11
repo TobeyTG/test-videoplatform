@@ -4,10 +4,6 @@ import { queryOptions, useQuery, useMutation } from "@tanstack/react-query";
 import { api } from "../client";
 import { queryKeys } from "./keys";
 
-// ---------------------------------------------------------------------------
-// Query Options
-// ---------------------------------------------------------------------------
-
 export function whoamiOptions() {
   return queryOptions({
     queryKey: queryKeys.users.me(),
@@ -31,10 +27,6 @@ export function userDetailOptions(username: string) {
     },
   });
 }
-
-// ---------------------------------------------------------------------------
-// Hooks
-// ---------------------------------------------------------------------------
 
 export function useCurrentUser() {
   return useQuery(whoamiOptions());

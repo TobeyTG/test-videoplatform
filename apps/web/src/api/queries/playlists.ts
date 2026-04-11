@@ -4,10 +4,6 @@ import { queryOptions, useQuery, useMutation, useQueryClient } from "@tanstack/r
 import { api } from "../client";
 import { queryKeys } from "./keys";
 
-// ---------------------------------------------------------------------------
-// Query Options
-// ---------------------------------------------------------------------------
-
 export function playlistListOptions(params?: { page?: number }) {
   return queryOptions({
     queryKey: queryKeys.playlists.list(params),
@@ -31,10 +27,6 @@ export function playlistDetailOptions(token: string) {
     },
   });
 }
-
-// ---------------------------------------------------------------------------
-// Hooks
-// ---------------------------------------------------------------------------
 
 export function usePlaylistList(params?: { page?: number }) {
   return useQuery(playlistListOptions(params));

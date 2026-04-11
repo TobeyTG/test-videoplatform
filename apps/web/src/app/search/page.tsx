@@ -20,7 +20,6 @@ function SearchResults() {
 
   return (
     <main className="mx-auto max-w-[1800px] px-4 pb-20 pt-28 md:px-8">
-      {/* Heading */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -51,7 +50,6 @@ function SearchResults() {
         )}
       </motion.div>
 
-      {/* Body */}
       {!hasQuery ? (
         <EmptyHint />
       ) : isLoading ? (

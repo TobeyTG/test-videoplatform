@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
+  { href: "/explore", label: "Explore" },
   { href: "/?browse=all", label: "Browse" },
 ];
 
@@ -36,7 +37,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Sync query with URL when on the search page
   useEffect(() => {
     if (pathname === "/search") {
       setSearchOpen(true);
@@ -44,8 +44,6 @@ export default function Navbar() {
     }
   }, [pathname, searchParams]);
 
-  // Debounced live search: while the search box is open and user is typing,
-  // push to /search?q=... so results update as they type.
   useEffect(() => {
     if (!searchOpen) return;
     const trimmed = query.trim();
@@ -93,7 +91,6 @@ export default function Navbar() {
       )}
     >
       <nav className="mx-auto flex h-16 max-w-[1800px] items-center justify-between gap-4 px-4 md:px-8">
-        {/* Left: logo + nav */}
         <div className="flex items-center gap-8">
           <Link href="/" className="group flex items-center gap-2">
             <motion.div
@@ -135,7 +132,6 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Right: search */}
         <div className="flex items-center gap-2">
           <AnimatePresence mode="wait" initial={false}>
             {searchOpen ? (

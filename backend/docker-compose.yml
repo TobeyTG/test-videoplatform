@@ -14,6 +14,7 @@ services:
     restart: on-failure
     volumes:
       - media_data:/home/mediacms.io/mediacms/media_files
+      - ./cms_settings.py:/home/mediacms.io/mediacms/deploy/docker/local_settings.py:ro
     depends_on:
       redis:
         condition: service_healthy
@@ -31,6 +32,7 @@ services:
       ENABLE_MIGRATIONS: "no"
     volumes:
       - media_data:/home/mediacms.io/mediacms/media_files
+      - ./cms_settings.py:/home/mediacms.io/mediacms/deploy/docker/local_settings.py:ro
     depends_on:
       - migrations
 
@@ -44,6 +46,7 @@ services:
       ENABLE_MIGRATIONS: "no"
     volumes:
       - media_data:/home/mediacms.io/mediacms/media_files
+      - ./cms_settings.py:/home/mediacms.io/mediacms/deploy/docker/local_settings.py:ro
     depends_on:
       - redis
 
@@ -56,6 +59,7 @@ services:
       ENABLE_MIGRATIONS: "no"
     volumes:
       - media_data:/home/mediacms.io/mediacms/media_files
+      - ./cms_settings.py:/home/mediacms.io/mediacms/deploy/docker/local_settings.py:ro
     depends_on:
       - migrations
 

@@ -85,7 +85,6 @@ function QualitySelector() {
       ? "Auto"
       : `${levels[currentLevel].height}p`;
 
-  // Display levels highest-to-lowest resolution.
   const sortedLevels = levels
     .map((level, idx) => ({ level, idx }))
     .sort((a, b) => b.level.height - a.level.height);

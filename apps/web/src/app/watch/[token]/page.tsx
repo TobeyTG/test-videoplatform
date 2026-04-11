@@ -54,14 +54,12 @@ export default async function WatchPage({ params }: Props) {
 
   return (
     <main className="mx-auto max-w-[1800px]">
-      {/* Video player — edge-to-edge on mobile, contained on desktop */}
       <div className="w-full bg-black">
         <div className="mx-auto aspect-video max-w-[1400px]">
           <Player src={videoSrc} poster={poster} />
         </div>
       </div>
 
-      {/* Video metadata */}
       <div className="mx-auto max-w-[1400px] px-6 py-6">
         <h1 className="text-xl font-bold text-foreground md:text-3xl">
           {media.title}
@@ -115,7 +113,6 @@ export default async function WatchPage({ params }: Props) {
         )}
       </div>
 
-      {/* Related videos row */}
       {related.length > 0 && (
         <div className="mt-4 pb-10">
           <VideoRow title="More to Watch" items={related} />

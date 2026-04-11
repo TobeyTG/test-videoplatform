@@ -4,10 +4,6 @@ import { queryOptions, useQuery, useMutation, useQueryClient } from "@tanstack/r
 import { api } from "../client";
 import { queryKeys } from "./keys";
 
-// ---------------------------------------------------------------------------
-// Query Options (can be used with useQuery, prefetching, etc.)
-// ---------------------------------------------------------------------------
-
 export function mediaListOptions(params?: { page?: number }) {
   return queryOptions({
     queryKey: queryKeys.media.list(params),
@@ -36,19 +32,14 @@ export function mediaCommentsOptions(token: string) {
   return queryOptions({
     queryKey: queryKeys.media.comments(token),
     queryFn: async () => {
-      const { data, error } = await api.GET(
-        "/media/{friendly_token}/comments",
-        { params: { path: { friendly_token: token } } },
-      );
+      const { data, error } = await api.GET("/media/{friendly_token}/comments", {
+        params: { path: { friendly_token: token } },
+      });
       if (error) throw new Error("Failed to fetch comments");
       return data;
     },
   });
 }
-
-// ---------------------------------------------------------------------------
-// Hooks
-// ---------------------------------------------------------------------------
 
 export function useMediaList(params?: { page?: number }) {
   return useQuery(mediaListOptions(params));
@@ -67,13 +58,10 @@ export function useMediaAction(token: string) {
 
   return useMutation({
     mutationFn: async (action: "like" | "dislike" | "report") => {
-      const { data, error } = await api.POST(
-        "/media/{friendly_token}/actions",
-        {
-          params: { path: { friendly_token: token } },
-          body: { action } as never,
-        },
-      );
+      const { data, error } = await api.POST("/media/{friendly_token}/actions", {
+        params: { path: { friendly_token: token } },
+        body: { action } as never,
+      });
       if (error) throw new Error("Failed to perform action");
       return data;
     },
@@ -88,13 +76,10 @@ export function usePostComment(token: string) {
 
   return useMutation({
     mutationFn: async (text: string) => {
-      const { data, error } = await api.POST(
-        "/media/{friendly_token}/comments",
-        {
-          params: { path: { friendly_token: token } },
-          body: { text } as never,
-        },
-      );
+      const { data, error } = await api.POST("/media/{friendly_token}/comments", {
+        params: { path: { friendly_token: token } },
+        body: { text } as never,
+      });
       if (error) throw new Error("Failed to post comment");
       return data;
     },
